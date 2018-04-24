@@ -3,6 +3,7 @@ package test;
 import java.io.IOException;
 
 import javax.servlet.ServletException;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -18,6 +19,12 @@ public class DemoServlet extends HttpServlet {
 		WebApplicationContext context = WebApplicationContextUtils.getWebApplicationContext(getServletContext());
 		DemoService demoService = (DemoService) context.getBean("demoService");
 		demoService.test();
+		Cookie[] cookies = req.getCookies();
+		for (Cookie cookie : cookies) {
+			String name = cookie.getName();
+			String value = cookie.getValue();
+			System.out.println(name + "-" + value);
+		}
 		resp.getWriter().append("somethings");
 	}
 }
