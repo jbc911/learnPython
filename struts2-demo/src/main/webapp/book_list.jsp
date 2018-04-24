@@ -8,8 +8,6 @@
 <title>Insert title here</title>
 </head>
 <body>
-	<s:i18n name="package_en">
-		<s:text name="book.name"></s:text>
-	</s:i18n>
+	<s:text name="book.name"></s:text>
 </body>
 </html>

@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE struts PUBLIC "-//Apache Software Foundation//DTD Struts Configuration 2.1//EN" "http://struts.apache.org/dtds/struts-2.1.dtd">
 <struts>
-	<constant name="struts.custom.i18n.resources" value="lang" />
+	<!--<constant name="struts.custom.i18n.resources" value="lang" /> 不些这段国际化也能用,还不清楚 
+		value值是填什么，前缀还是全部名称用分隔符隔开 -->
 	<package name="book" namespace="/" extends="struts-default">
 		<action name="book_*" class="action.BookAction" method="{1}">
 			<result>book_list.jsp</result>
