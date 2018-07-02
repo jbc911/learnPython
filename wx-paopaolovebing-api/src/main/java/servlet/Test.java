@@ -35,7 +35,7 @@ public class Test extends HttpServlet {
 		String timestamp = request.getParameter("timestamp");
 		String nonce = request.getParameter("nonce");
 		String echostr = request.getParameter("echostr");
-		String token = "需要微信自定义token";
+		String token = "xxxxxx";
 		PrintWriter out = response.getWriter();
 		List<String> list = new ArrayList<String>();
 		list.add(nonce);
@@ -90,16 +90,20 @@ public class Test extends HttpServlet {
 	}
 
 	private String getAnswer(String question) {
+		String answer = null;
 		if (question != null && !question.trim().equals("")) {
 			if (question.indexOf("=") > -1) {
 				JdbcUtil.save(question);
 			} else if (question.indexOf("-") > -1) {
-				return JdbcUtil.delete(question);
+				answer = JdbcUtil.delete(question);
 			} else {
-				return JdbcUtil.list(question);
+				answer = JdbcUtil.list(question);
 			}
 		}
-		return JdbcUtil.getById(-999);
+		if(answer==null||answer.trim().isEmpty()) {
+			answer = JdbcUtil.getById(-999);
+		}
+		return answer;
 	}
 
 	public static void main(String[] args) {

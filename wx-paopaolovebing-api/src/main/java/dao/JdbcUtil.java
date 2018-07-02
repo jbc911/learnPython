@@ -7,20 +7,29 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import utils.PropertiesUtil;
 
 public class JdbcUtil {
-	public static Connection getConn() throws SQLException {
-		System.out.println("getConn");
-		System.out.println(PropertiesUtil.getValue("jdbc.driver"));
+	private static final Logger LOGGER = LoggerFactory.getLogger(JdbcUtil.class);
+
+	public static Connection getConn() {
 		try {
+			LOGGER.info("Class.forName");
 			Class.forName(PropertiesUtil.getValue("jdbc.driver"));
 		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
+			LOGGER.error("找不到jdbc.driver类", e);
 		}
-		System.out.println(PropertiesUtil.getValue("jdbc.url"));
-		Connection conn = DriverManager.getConnection(PropertiesUtil.getValue("jdbc.url"),
-				PropertiesUtil.getValue("jdbc.user"), PropertiesUtil.getValue("jdbc.password"));
+		LOGGER.info("得到连接");
+		Connection conn = null;
+		try {
+			conn = DriverManager.getConnection(PropertiesUtil.getValue("jdbc.url"),
+					PropertiesUtil.getValue("jdbc.user"), PropertiesUtil.getValue("jdbc.password"));
+		} catch (SQLException e) {
+			LOGGER.error("得到连接出错", e);
+		}
 		return conn;
 	}
 
@@ -128,19 +137,22 @@ public class JdbcUtil {
 	}
 
 	public static String getById(int i) {
+		String result = null;
 		Connection conn = null;
 		try {
 			conn = getConn();
-			Statement statement = conn.createStatement();
-			ResultSet rs = statement.executeQuery("select answer from msg_info where id = " + i);
+			LOGGER.info("getById:" + i);
+			PreparedStatement prepareStatement = conn.prepareStatement("select answer from msg_info where id = " + i);
+			ResultSet rs = prepareStatement.executeQuery();
 			if (rs.next()) {
-				return rs.getString(1);
+				result = rs.getString(1);
 			}
 		} catch (SQLException e) {
-			e.printStackTrace();
+			LOGGER.error("查询出错了!", e);
 		} finally {
 			closeConn(conn);
 		}
-		return null;
+		LOGGER.info("getById-result:" + result);
+		return result;
 	}
 }
