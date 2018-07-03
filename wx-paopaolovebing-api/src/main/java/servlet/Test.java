@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -36,14 +37,11 @@ public class Test extends HttpServlet {
 		String nonce = request.getParameter("nonce");
 		String echostr = request.getParameter("echostr");
 		String token = "xxxxxx";
-		PrintWriter out = response.getWriter();
-		List<String> list = new ArrayList<String>();
-		list.add(nonce);
-		list.add(timestamp);
-		list.add(token);
+		List<String> list = Arrays.asList(nonce, timestamp, token);
 		Collections.sort(list);
-		String str = DigestUtils.sha1Hex(list.get(0) + list.get(1) + list.get(2));
-		if (str.equals(signature)) {
+		String sha1Hex = DigestUtils.sha1Hex(list.get(0) + list.get(1) + list.get(2));
+		PrintWriter out = response.getWriter();
+		if (sha1Hex.equals(signature)) {
 			out.print(echostr);
 		}
 		out.close();
@@ -61,7 +59,6 @@ public class Test extends HttpServlet {
 			map.put(e.getName(), e.getText());
 		inputStream.close();
 		inputStream = null;
-
 		return map;
 	}
 
@@ -100,7 +97,7 @@ public class Test extends HttpServlet {
 				answer = JdbcUtil.list(question);
 			}
 		}
-		if(answer==null||answer.trim().isEmpty()) {
+		if (answer == null || answer.trim().isEmpty()) {
 			answer = JdbcUtil.getById(-999);
 		}
 		return answer;
